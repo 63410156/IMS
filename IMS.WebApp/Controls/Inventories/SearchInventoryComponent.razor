@@ -1,0 +1,39 @@
+﻿@*
+    it won't need the @page because it is the reusable component and we don't need to navigate to this component
+    we will put this component on to the page and when the page is loaded this component will be instantiated
+*@
+
+<div class="input-group">
+    <input 
+        type="text" class="form-control" placeholder="Type inventory name here to search" 
+        @bind-value="inventoryNameToSearch"    
+    />
+    <button 
+        type="button" class="btn-success input-group-text"
+        @onclick="OnSearch"
+     >
+        Search
+    </button>
+</div>
+
+
+@* 
+    @inventoryNameToSearch // this is the one way binding because it only bind the value of the variable
+*@
+
+@code {
+    // when ever the input is type the value will be store in the variable 
+    // two way binding with the @bind-value when the value of the variable will be in the input also when the input value is change to variable will refect that
+    private string inventoryNameToSearch = string.Empty;
+
+    // parameter for when the search button is click we will pass the value of the inventoryNameToSearch into the parent component
+    [Parameter] // exposed as the parameter for the parent component
+    public EventCallback<string> OnSearchInventory { get; set; }
+
+    // event handler
+    private void OnSearch()
+    {
+        // grab the inventoryNameToSearch value and then call the OnSearchInventory to pass the value to parent component
+        OnSearchInventory.InvokeAsync(inventoryNameToSearch);
+    }
+}

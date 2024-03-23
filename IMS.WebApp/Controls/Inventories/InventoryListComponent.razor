@@ -1,0 +1,32 @@
+﻿@* dependency inject the usecase to this component *@
+@inject IViewInventoriesByNameUseCase ViewInventoriesByNameUseCase
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @* if the value is string then we need to do @listInventories instead*@
+        <InventoryListItemComponent Inventories="listInventories"></InventoryListItemComponent>
+    </tbody>
+</table>
+
+@code {
+    private List<Inventory> listInventories = new List<Inventory>();
+
+    // pass the SearchTerm from InventoryList.razor page component
+    [Parameter] // make it so the component in page component can see and use this parameter to pass in to this component
+    public string SearchTerm { get; set; } = string.Empty;
+
+    // life cycle event of the component it trigger whenever the parameter is change or when the component is loaded and parameter is set for the first time
+    protected override async Task OnParametersSetAsync() // only trigger when the search term come to this component
+    {
+        // when populated the ui will rerendered(only the part that difference)
+        listInventories = (await ViewInventoriesByNameUseCase.ExecuteAsync(this.SearchTerm)).ToList();
+    }
+}
